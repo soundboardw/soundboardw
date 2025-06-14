@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Explore the best soundboard online at SoundBoardW.com – your go-to source for free sound effects, meme sound buttons, and more. Download or play instantly!" />
+  <meta name="keywords" content="SoundBoard, sound board, sound buttons, soundbutton, sound board free, meme soundboard, sound effects" />
+  <meta name="author" content="SoundBoardW Team" />
+  <title>SoundBoardW.com - The Ultimate Free SoundBoard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Welcome to SoundBoardW.com</h1>
+    <p>Your ultimate hub for free <a href="https://soundboardw.com/">soundboard unblocked</a>, meme sounds, and iconic sound buttons.</p>
+    <nav>
+      <ul>
+        <li><a href="#trending">Trending Sounds</a></li>
+        <li><a href="#categories">Sound Categories</a></li>
+        <li><a href="#download">Free Download</a></li>
+        <li><a href="#about">About Us</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="trending">
+    <h2>Trending SoundBoard Buttons</h2>
+    <p>Discover the latest viral sounds on the internet – from swoosh effects to meme quotes and iconic game sound bites.</p>
+    <div class="sound-list">
+      <button>Play "Bruh"</button>
+      <button>Play "Air Horn"</button>
+      <button>Play "Swoosh"</button>
+      <button>Play "Windows Error"</button>
+    </div>
+  </section>
+
+  <section id="categories">
+    <h2>Sound Categories</h2>
+    <ul>
+      <li>Meme SoundBoard</li>
+      <li>Game Sound Effects</li>
+      <li>Movie Quotes</li>
+      <li>Notification Sounds</li>
+      <li>Transition Effects</li>
+    </ul>
+  </section>
+
+  <section id="download">
+    <h2>Listen and Download Free Sound Buttons</h2>
+    <p>All our sounds are free to listen and download. Just click and enjoy high-quality audio files.</p>
+    <p>Looking for percussion effects? Check out our <a href="/drum-soundboard" title="Drum SoundBoard">Drum SoundBoard</a>.</p>
+  </section>
+
+  <section id="about">
+    <h2>About SoundBoardW.com</h2>
+    <p>SoundBoardW.com is a free platform offering a massive collection of soundboard effects, sound buttons, and downloadable sound clips for creators, gamers, and pranksters. No logins, no limits – just play or download instantly.</p>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 SoundBoardW.com – All Rights Reserved.</p>
+    <p><a href="/privacy-policy">Privacy Policy</a> | <a href="/contact">Contact Us</a></p>
+  </footer>
+</body>
+</html>
