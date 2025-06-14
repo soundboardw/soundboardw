@@ -1,96 +1,1243 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>SoundboardW - Free Meme, Game & Movie Soundboards</title>
-    <meta name="description" content="Discover and use thousands of free sound effects at SoundboardW.com. Soundboards for memes, gaming, anime, and more. Click and play instantly!">
-    <meta name="keywords" content="soundboard, sound board, meme sounds, sound effects, free soundboard, online soundboard">
+    <title>The World of Sound Buttons - SoundBoardW.com</title>
+    <meta name="description" content="The ultimate soundboard with thousands of meme, game, anime, and effect sounds. Play, download, and share for free.">
+    <meta name="keywords" content="meme sounds, game sounds, anime soundboard, sound effects, bootstrap, soundboard, download sound, share sound, sound post, related sounds, breadcrumbs, faq, contact, privacy, terms">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://soundboardw.com/">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* background-color set by Bootstrap theme */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .site-content-wrapper {
+            flex-grow: 1;
+        }
+        .section-title {
+            font-size: 2rem; /* Increased size */
+            font-weight: 800; /* Bolder */
+            margin-bottom: 2rem; 
+            color: var(--bs-emphasis-color); 
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--bs-primary-border-subtle); /* Theme-aware border */
+        }
+        .section-title-small {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            color: var(--bs-emphasis-color);
+        }
+        .playing-indicator-bar {
+            width: 4px; height: 100%;
+            background-color: currentColor; 
+            margin: 0 1px;
+            animation: playing-sound-anim 0.8s infinite ease-in-out alternate;
+            transform-origin: bottom;
+        }
+        .playing-indicator-bar:nth-child(1) { animation-delay: -0.4s; }
+        .playing-indicator-bar:nth-child(2) { animation-delay: -0.2s; }
+        .playing-indicator-bar:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes playing-sound-anim {
+            0% { transform: scaleY(0.3); }
+            100% { transform: scaleY(1); }
+        }
+        .loader {
+            border: 3px solid var(--bs-secondary-bg); 
+            border-top: 3px solid var(--bs-primary); 
+            border-radius: 50%; width: 20px; height: 20px;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        footer { margin-top: auto; }
+
+        .sound-button-item-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.75rem 0.5rem;
+        }
+        .sound-button-main {
+            width: 95px; 
+            height: 95px; 
+            border-radius: 50%; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.18s ease-out, box-shadow 0.18s ease-out;
+            /* Neumorphic-inspired shadow, adjusted for theme */
+            background: var(--bs-body-bg); /* Ensure button bg matches page bg for neumorphic */
+            box-shadow: 
+                -5px -5px 10px var(--bs-tertiary-bg), 
+                5px 5px 10px var(--bs-secondary-bg);
+            position: relative;
+            overflow: hidden;
+        }
+        [data-bs-theme="dark"] .sound-button-main {
+             box-shadow: 
+                -5px -5px 10px rgba(255, 255, 255, 0.05), 
+                5px 5px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .sound-button-main:hover {
+            transform: scale(1.03);
+            box-shadow: 
+                -7px -7px 14px var(--bs-tertiary-bg),
+                7px 7px 14px var(--bs-secondary-bg);
+        }
+        [data-bs-theme="dark"] .sound-button-main:hover {
+            box-shadow: 
+                -7px -7px 14px rgba(255, 255, 255, 0.07),
+                7px 7px 14px rgba(0, 0, 0, 0.35);
+        }
+        .sound-button-main:active {
+            transform: scale(0.97);
+            box-shadow: 
+                inset -4px -4px 8px var(--bs-tertiary-bg),
+                inset 4px 4px 8px var(--bs-secondary-bg);
+        }
+        [data-bs-theme="dark"] .sound-button-main:active {
+             box-shadow: 
+                inset -4px -4px 8px rgba(255, 255, 255, 0.04),
+                inset 4px 4px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        .sound-button-main .play-icon-container .bi {
+            font-size: 2.1rem; 
+        }
+        .sound-button-main .playing-indicator-container {
+            height: 34px; 
+            width: 34px;
+        }
+        .sound-button-name-link {
+            font-size: 0.8rem; 
+            margin-top: 0.85rem;
+            color: var(--bs-body-color); 
+            text-align: center;
+            display: block; 
+            width: 110px; 
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .sound-button-name-link:hover {
+            color: var(--bs-primary); 
+            text-decoration: underline;
+        }
+        .sound-button-controls {
+            margin-top: 0.6rem; display: flex;
+            justify-content: center; gap: 0.4rem;
+        }
+        .sound-button-controls .btn {
+            padding: 0.2rem 0.4rem; font-size: 0.75rem;
+        }
+        .page-content-container {
+            background-color: var(--bs-body-bg); 
+            border: 1px solid var(--bs-border-color-translucent);
+            border-radius: 0.75rem;
+        }
+        #postPlayButtonContainer .btn { 
+            font-size: 1.25rem; padding: 0.85rem 2.25rem;
+            border-radius: 50px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        #postPlayButtonContainer .btn:hover {
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        #postPlayButtonContainer .btn .bi {
+            font-size: 1.8rem; margin-right: 0.6rem;
+        }
+        #postPlayButtonContainer .btn .playing-indicator-container {
+            height: 30px; width: 30px; margin-right: 0.6rem;
+        }
+        
+        #sidebarContent .card {
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--bs-border-color-translucent);
+        }
+        #sidebarContent .list-group-item {
+            padding: 0.6rem 0.8rem;
+            font-size: 0.85rem;
+            background-color: transparent; /* For theme compatibility */
+            border-left:0; border-right:0;
+        }
+        #sidebarContent .list-group-item:first-child { border-top:0; }
+        #sidebarContent .list-group-item:last-child { border-bottom:0; }
+        #sidebarContent .list-group-item a {
+            text-decoration: none;
+            color: var(--bs-body-color);
+        }
+        #sidebarContent .list-group-item a:hover {
+            color: var(--bs-primary);
+        }
+        #sidebarContent .badge { 
+            font-size: 0.7em;
+        }
+
+        #categoryListOnPostPage .list-group-item a{
+            display: block;
+            padding: 0.5rem 0.75rem;
+            text-decoration: none;
+            color: var(--bs-primary);
+        }
+         #categoryListOnPostPage .list-group-item a:hover{
+            background-color: var(--bs-tertiary-bg);
+        }
+        .breadcrumb-item a {
+            text-decoration: none;
+        }
+        .breadcrumb-item.active {
+            color: var(--bs-secondary-color); 
+        }
+        #backToTopBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            z-index: 1030; /* Below sticky header but above most content */
+        }
+        .faq-section .accordion-button:not(.collapsed) {
+            color: var(--bs-primary);
+            background-color: var(--bs-primary-bg-subtle);
+        }
+        .static-page h5 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+    </style>
 </head>
 <body>
-
-    <header>
-        <nav>
-            <div class="logo">
-                <a href="/">SoundboardW</a>
-            </div>
-            <ul class="nav-links">
-                <li><a href="/categories/memes">Memes</a></li>
-                <li><a href="/categories/gaming">Gaming</a></li>
-                <li><a href="/categories/movies">Movies</a></li>
-                <li><a href="/about">About</a></li>
-            </ul>
-        </nav>
+    <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fs-4 fw-bold" href="#" id="siteTitleLink">SoundBoardW.com</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <nav class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#" id="navHome">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#sort-latest" id="navLatest">Latest</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#sort-popular" id="navPopular">Popular</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#sort-trending" id="navTrending">Trending</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#categories" id="navCategories">Categories</a></li>
+                    <li class="nav-item ms-lg-2">
+                        <button id="themeToggleBtn" class="btn btn-outline-light btn-sm" title="Toggle Light/Dark Mode">
+                            <i class="bi bi-sun-fill"></i>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
-    <main>
-        <section class="hero">
-            <h1>The World of Sound at Your Fingertips</h1>
-            <p>Explore thousands of free sound effects, from hilarious memes to iconic movie clips.</p>
-            <div class="search-container">
-                <input type="text" placeholder="Search for sounds...">
-                <button><i class="fa fa-search"></i></button>
-            </div>
-        </section>
+    <div class="site-content-wrapper container my-4">
+        <div class="row">
+            <main id="mainContentArea" class="col-lg-9 order-lg-1">
+                <nav aria-label="breadcrumb" id="breadcrumbsContainer" class="mb-3 bg-body-tertiary p-2 rounded shadow-sm"></nav>
+                
+                <div id="mainPageTitleContainer" class="mb-4">
+                </div>
 
-        <section class="popular-categories">
-            <h2>Popular Categories</h2>
-            <div class="category-grid">
-                <div class="category-card">
-                    <img src="images/meme.jpg" alt="Meme Sounds">
-                    <h3>Meme Sounds</h3>
+                <div class="mb-4">
+                    <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Search for sounds...">
                 </div>
-                <div class="category-card">
-                    <img src="images/gaming.jpg" alt="Gaming SFX">
-                    <h3>Gaming SFX</h3>
+                <div class="d-lg-none mb-3"> 
+                    <label for="categorySelectMobile" class="form-label">Select category:</label>
+                    <select id="categorySelectMobile" class="form-select"></select>
                 </div>
-                <div class="category-card">
-                    <img src="images/anime.jpg" alt="Anime Clips">
-                    <h3>Anime Clips</h3>
+
+                <div id="homePageSections">
+                    <div class="text-center mb-5" id="homeHeader">
+                        <h1 class="display-4 fw-bolder text-primary">SoundBoardW.com</h1>
+                        <p class="lead text-muted">Your sound space - Discover, Create, Share!</p>
+                    </div>
+
+                    <section id="latestSoundsSection" class="mb-5">
+                        <h2 class="section-title">Latest Sounds</h2>
+                        <div id="latestSoundsContainer" class="row row-cols-2 row-cols-sm-3 row-cols-md-3 row-cols-lg-4 g-3"></div>
+                        <a href="#sort-latest" class="btn btn-primary d-block mx-auto mt-3 view-more-link">View all new sounds</a>
+                    </section>
+                    <section id="popularSoundsSection" class="mb-5">
+                        <h2 class="section-title">Most Popular Sounds</h2>
+                        <div id="popularSoundsContainer" class="row row-cols-2 row-cols-sm-3 row-cols-md-3 row-cols-lg-4 g-3"></div>
+                        <a href="#sort-popular" class="btn btn-primary d-block mx-auto mt-3 view-more-link">View all popular sounds</a>
+                    </section>
+                    <section id="trendingSoundsSection" class="mb-5">
+                        <h2 class="section-title">Trending Sounds</h2>
+                        <div id="trendingSoundsContainer" class="row row-cols-2 row-cols-sm-3 row-cols-md-3 row-cols-lg-4 g-3"></div>
+                        <a href="#sort-trending" class="btn btn-primary d-block mx-auto mt-3 view-more-link">View all trending sounds</a>
+                    </section>
+                    
+                    <section id="homeIntroFaqSection" class="mt-5 pt-4 border-top">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <h3 class="section-title-small">Welcome to SoundBoardW.com!</h3>
+                                <p class="text-muted">SoundBoardW.com is where you can find thousands of unique sound effects for every need: from video production, game development, presentations, to fun meme sounds to share with friends. We continuously update our collection with the latest and highest quality sounds.</p>
+                                <p class="text-muted">Explore, download, and use them for free!</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h3 class="section-title-small">Frequently Asked Questions (F.A.Q.)</h3>
+                                <div class="accordion" id="faqAccordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="faqHeadingOne">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseOne" aria-expanded="false" aria-controls="faqCollapseOne">
+                                                How do I use the sounds?
+                                            </button>
+                                        </h2>
+                                        <div id="faqCollapseOne" class="accordion-collapse collapse" aria-labelledby="faqHeadingOne" data-bs-parent="#faqAccordion">
+                                            <div class="accordion-body text-muted">
+                                                Simply click on any sound button to play it instantly. To download, click the <i class="bi bi-download"></i> icon below the sound. You can use the sounds in your video edits, streams, or just for fun. For commercial usage, please see our <a href="#terms">Terms of Use</a>.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="faqHeadingTwo">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseTwo" aria-expanded="false" aria-controls="faqCollapseTwo">
+                                                Are the sounds really free?
+                                            </button>
+                                        </h2>
+                                        <div id="faqCollapseTwo" class="accordion-collapse collapse" aria-labelledby="faqHeadingTwo" data-bs-parent="#faqAccordion">
+                                            <div class="accordion-body text-muted">
+                                                Yes, all sounds on SoundBoardW.com are free to play, share, and download for personal use. They are provided for entertainment and fall under fair use. If you represent a copyright holder and believe a sound infringes on your copyright, please <a href="#contact">contact us</a> for its removal.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="faqHeadingThree">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseThree" aria-expanded="false" aria-controls="faqCollapseThree">
+                                               Can I request a sound or a new category?
+                                            </button>
+                                        </h2>
+                                        <div id="faqCollapseThree" class="accordion-collapse collapse" aria-labelledby="faqHeadingThree" data-bs-parent="#faqAccordion">
+                                            <div class="accordion-body text-muted">
+                                                Absolutely! We are always looking to expand our library. Please send your suggestions for new sounds or categories to our email address listed on the <a href="#contact">Contact</a> page. We appreciate your feedback!
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
-                <div class="category-card">
-                    <img src="images/funny.jpg" alt="Funny Pranks">
-                    <h3>Funny Pranks</h3>
+
+                <div id="soundButtonGridContainer" class="row row-cols-2 row-cols-sm-3 row-cols-md-3 row-cols-lg-4 g-3 d-none"></div>
+                
+                <div id="allCategoriesContainer" class="d-none">
+                    <div id="allCategoriesGrid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"></div>
+                </div>
+
+                <div id="soundPostPageContainer" class="d-none p-4 p-md-5 page-content-container shadow-lg">
+                    <button id="backToGridButton" class="btn btn-outline-secondary mb-4"><i class="bi bi-arrow-left me-2"></i>Back</button>
+                    <div id="postPageContent">
+                        <h1 id="postSoundName" class="display-5 fw-bold mb-2"></h1>
+                        <p id="postSoundCategory" class="text-muted mb-1">Category: <a href="#" class="text-decoration-none"></a></p>
+                        <p id="postSoundDate" class="text-muted small mb-4">Date added: <span class="fw-medium"></span></p>
+                        <div id="postPlayButtonContainer" class="my-5 text-center"></div>
+                        <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 mb-5">
+                            <div class="d-flex align-items-center" id="postPlayCountWrapper" title="Plays"><i class="bi bi-play-circle-fill text-primary me-1 fs-5"></i><span id="postPlayCount" class="fw-semibold ms-1"></span></div>
+                            <div class="d-flex align-items-center" id="postDownloadCountWrapper" title="Downloads"><i class="bi bi-download text-success me-1 fs-5"></i><span id="postDownloadCount" class="fw-semibold ms-1"></span></div>
+                        </div>
+                        <div id="postControlsContainer" class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3"></div>
+                    </div>
+                    <section id="relatedSoundsPostSection" class="mt-5 pt-4 border-top">
+                        <h3 class="section-title-small">Sounds in this Category</h3>
+                        <div id="relatedSoundsPostContainer" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3"></div>
+                    </section>
+                    <section id="categoryListPostSection" class="mt-5 pt-4 border-top">
+                        <h3 class="section-title-small">Discover Other Categories</h3>
+                        <ul id="categoryListOnPostPage" class="list-group list-group-flush"></ul>
+                    </section>
+                </div>
+
+                <div id="contactPageContainer" class="d-none p-4 p-md-5 static-page page-content-container shadow-lg">
+                    <h1 class="section-title">Contact Us</h1>
+                    <p class="lead">We'd love to hear from you!</p>
+                    <p>Whether you have a question, a suggestion for a new sound, a feature request, or a copyright concern, our team is ready to answer all your inquiries. Please feel free to reach out to us.</p>
+                    
+                    <h5>General Inquiries & Feedback</h5>
+                    <p>For general questions, feedback, or sound requests, please email us at:</p>
+                    <p><a href="mailto:contact@soundboardw.example.com" class="fw-bold">contact@soundboardw.example.com</a></p>
+
+                    <h5>Copyright Concerns</h5>
+                    <p>SoundBoardW.com respects intellectual property rights. If you believe that a sound available on our platform infringes on your copyright, please notify us immediately. Provide a detailed description of the copyrighted work, where it is located on our site, and your contact information. Please send all copyright-related inquiries to:</p>
+                    <p><a href="mailto:copyright@soundboardw.example.com" class="fw-bold">copyright@soundboardw.example.com</a></p>
+                    
+                    <h5>Business & Partnerships</h5>
+                    <p>For partnership opportunities, advertising, or other business-related matters, please contact our business development team at:</p>
+                    <p><a href="mailto:biz@soundboardw.example.com" class="fw-bold">biz@soundboardw.example.com</a></p>
+
+                    <h5 class="mt-4">Follow Us</h5>
+                    <p>Stay up-to-date with our latest sounds and announcements by following us on social media:</p>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-twitter-x me-2"></i><a href="#" class="text-decoration-none">Twitter</a></li>
+                        <li><i class="bi bi-facebook me-2"></i><a href="#" class="text-decoration-none">Facebook</a></li>
+                        <li><i class="bi bi-instagram me-2"></i><a href="#" class="text-decoration-none">Instagram</a></li>
+                    </ul>
+                    <p class="text-muted mt-4">We aim to respond to all inquiries within 48 business hours.</p>
+                </div>
+                <div id="privacyPageContainer" class="d-none p-4 p-md-5 static-page page-content-container shadow-lg">
+                    <h1 class="section-title">Privacy Policy</h1>
+                    <p><em>Last updated: June 14, 2025</em></p>
+                    <p>Welcome to SoundBoardW.com ("us", "we", or "our"). We operate the SoundBoardW.com website (the "Service"). This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.</p>
+                    
+                    <h5>1. Information Collection and Use</h5>
+                    <p>We collect several different types of information for various purposes to provide and improve our Service to you.</p>
+                    <p><strong>Personal Data:</strong> While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you ("Personal Data"). This may include, but is not limited to, your email address when you contact us.</p>
+                    <p><strong>Usage Data:</strong> We may also collect information on how the Service is accessed and used ("Usage Data"). This Usage Data may include information such as your computer's Internet Protocol (IP) address, browser type, browser version, the pages of our Service that you visit, the time and date of your visit, the time spent on those pages, unique device identifiers, and other diagnostic data.</p>
+                    
+                    <h5>2. Use of Data</h5>
+                    <p>SoundBoardW.com uses the collected data for various purposes:</p>
+                    <ul>
+                        <li>To provide and maintain the Service</li>
+                        <li>To notify you about changes to our Service</li>
+                        <li>To allow you to participate in interactive features of our Service when you choose to do so</li>
+                        <li>To provide customer care and support</li>
+                        <li>To provide analysis or valuable information so that we can improve the Service</li>
+                        <li>To monitor the usage of the Service</li>
+                        <li>To detect, prevent and address technical issues</li>
+                    </ul>
+                    
+                    <h5>3. Transfer Of Data</h5>
+                    <p>Your information, including Personal Data, may be transferred to — and maintained on — computers located outside of your state, province, country or other governmental jurisdiction where the data protection laws may differ than those from your jurisdiction. Your consent to this Privacy Policy followed by your submission of such information represents your agreement to that transfer.</p>
+
+                    <h5>4. Disclosure Of Data</h5>
+                    <p>We may disclose your Personal Data in the good faith belief that such action is necessary to comply with a legal obligation, to protect and defend the rights or property of SoundBoardW.com, to prevent or investigate possible wrongdoing in connection with the Service, to protect the personal safety of users of the Service or the public, or to protect against legal liability.</p>
+
+                    <h5>5. Security Of Data</h5>
+                    <p>The security of your data is important to us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your Personal Data, we cannot guarantee its absolute security.</p>
+
+                    <h5>6. Children's Privacy</h5>
+                    <p>Our Service does not address anyone under the age of 13 ("Children"). We do not knowingly collect personally identifiable information from anyone under the age of 13. If you are a parent or guardian and you are aware that your Children has provided us with Personal Data, please contact us. If we become aware that we have collected Personal Data from children without verification of parental consent, we take steps to remove that information from our servers.</p>
+
+                    <h5>7. Changes To This Privacy Policy</h5>
+                    <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page. We will let you know via email and/or a prominent notice on our Service, prior to the change becoming effective and update the "last updated" date at the top of this Privacy Policy. You are advised to review this Privacy Policy periodically for any changes.</p>
+                </div>
+                <div id="termsPageContainer" class="d-none p-4 p-md-5 static-page page-content-container shadow-lg">
+                    <h1 class="section-title">Terms of Use</h1>
+                    <p><em>Last updated: June 14, 2025</em></p>
+                    <p>Please read these Terms of Use ("Terms", "Terms of Use") carefully before using the SoundBoardW.com website (the "Service") operated by us.</p>
+                    <p>Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms. These Terms apply to all visitors, users, and others who access or use the Service.</p>
+                    <p>By accessing or using the Service, you agree to be bound by these Terms. If you disagree with any part of the terms, then you may not access the Service.</p>
+                    
+                    <h5>1. Intellectual Property</h5>
+                    <p>The Service and its original content (excluding content provided by users), features, and functionality are and will remain the exclusive property of SoundBoardW.com and its licensors. The Service is protected by copyright, trademark, and other laws of both the United States and foreign countries.</p>
+                    
+                    <h5>2. Sound Content and Fair Use</h5>
+                    <p>The sound clips ("Sounds") available on the Service are provided for entertainment, commentary, and educational purposes under the Fair Use doctrine of copyright law. SoundBoardW.com does not claim ownership of the original source material for these Sounds. All trademarks, logos, and brand names are the property of their respective owners.</p>
+                    <p>You may play, download, and share the Sounds for personal, non-commercial use. You are solely responsible for your use of the Sounds. You agree not to use the Sounds in any way that is unlawful, defamatory, or infringes on the rights of others.</p>
+
+                    <h5>3. User Conduct</h5>
+                    <p>You agree not to use the Service to:</p>
+                    <ul>
+                        <li>Upload, post, email, transmit, or otherwise make available any content that is illegal, harmful, threatening, abusive, harassing, tortious, defamatory, vulgar, obscene, libelous, invasive of another's privacy, hateful, or racially, ethnically, or otherwise objectionable.</li>
+                        <li>Impersonate any person or entity.</li>
+                        <li>Interfere with or disrupt the Service or servers or networks connected to the Service.</li>
+                    </ul>
+
+                    <h5>4. Disclaimer</h5>
+                    <p>Your use of the Service is at your sole risk. The Service is provided on an "AS IS" and "AS AVAILABLE" basis. The Service is provided without warranties of any kind, whether express or implied, including, but not limited to, implied warranties of merchantability, fitness for a particular purpose, non-infringement, or course of performance.</p>
+
+                    <h5>5. Limitation Of Liability</h5>
+                    <p>In no event shall SoundBoardW.com, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the Service.</p>
+                    
+                    <h5>6. Governing Law</h5>
+                    <p>These Terms shall be governed and construed in accordance with the laws of the United States, without regard to its conflict of law provisions.</p>
+                </div>
+
+                <div id="noResultsMessage" class="text-center text-muted fs-4 mt-5 d-none">
+                    <p>No matching sounds found.</p>
+                </div>
+            </main>
+
+            <aside id="sidebarArea" class="col-lg-3 order-lg-2 mt-4 mt-lg-0">
+                <div class="sticky-top" style="top: 80px;">
+                    <div id="sidebarContent">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0 fw-semibold"><i class="bi bi-star-fill text-warning me-2"></i>Most Popular</h5>
+                            </div>
+                            <ul id="sidebarPopularSoundsContainer" class="list-group list-group-flush"></ul>
+                        </div>
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0 fw-semibold"><i class="bi bi-graph-up-arrow text-success me-2"></i>Trending</h5>
+                            </div>
+                            <ul id="sidebarTrendingSoundsContainer" class="list-group list-group-flush"></ul>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center p-4 mt-auto">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h5>SoundBoardW.com</h5>
+                    <p class="small text-white-50">A free sound library for all your creative needs.</p>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#contact" class="text-white-50 text-decoration-none hover-primary">Contact</a></li>
+                        <li><a href="#privacy" class="text-white-50 text-decoration-none hover-primary">Privacy Policy</a></li>
+                        <li><a href="#terms" class="text-white-50 text-decoration-none hover-primary">Terms of Use</a></li>
+                        <li><a href="#faq" class="text-white-50 text-decoration-none hover-primary">F.A.Q</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Follow Us</h5>
+                    <a href="#" class="text-white-50 fs-4 me-2 text-decoration-none"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" class="text-white-50 fs-4 me-2 text-decoration-none"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-white-50 fs-4 text-decoration-none"><i class="bi bi-instagram"></i></a>
                 </div>
             </div>
-        </section>
-
-        <section class="latest-sounds">
-            <h2>Latest Sounds</h2>
-            <div class="sound-grid">
-                <div class="sound-item">
-                    <h4>Roronoa Zoro - One Piece</h4>
-                    <button class="play-btn"><i class="fa fa-play"></i></button>
-                    <a href="/download/zoro.mp3" class="download-btn" title="Download"><i class="fa fa-download"></i></a>
-                </div>
-                <div class="sound-item">
-                    <h4>Chicken Sound</h4>
-                    <button class="play-btn"><i class="fa fa-play"></i></button>
-                    <a href="/download/chicken.mp3" class="download-btn" title="Download"><i class="fa fa-download"></i></a>
-                </div>
-                 <div class="sound-item">
-                    <h4>Oh My God</h4>
-                    <button class="play-btn"><i class="fa fa-play"></i></button>
-                    <a href="/download/omg.mp3" class="download-btn" title="Download"><i class="fa fa-download"></i></a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 SoundboardW.com - All Rights Reserved.</p>
-        <div class="footer-links">
-            <a href="/privacy-policy">Privacy Policy</a>
-            <a href="/terms-of-service">Terms of Service</a>
-            <a href="/contact">Contact</a>
+            <hr class="my-3 bg-secondary">
+            <p class="small mb-0">&copy; <span id="currentYear"></span> SoundBoardW.com</p>
         </div>
     </footer>
+    
+    <button id="backToTopBtn" class="btn btn-primary btn-lg rounded-circle shadow">
+        <i class="bi bi-arrow-up-short"></i>
+    </button>
 
-</body>
-</html>
+    <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="shareModalLabel">Share Sound</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="shareText" class="mb-2 small">Copy this link to share:</p>
+                    <input type="text" id="shareLinkInput" class="form-control mb-3" readonly>
+                    <button id="copyLinkButton" class="btn btn-primary w-100">Copy Link</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // --- SOUND DATA (NEW) ---
+    const soundButtonsData = [
+        // Category: Memes
+        { id: "vine-boom", name: "Vine Boom", category: "Memes", soundType: "noiseSynth", options: { noise: { type: 'brown' }, envelope: { attack: 0.01, decay: 0.3, sustain: 0.1, release: 0.2 }, filter: { type: 'lowpass', Q: 1, frequency: 120 } }, duration: "4n", volume: -5, dateAdded: "2025-06-14T10:00:00.000Z", plays: 987, downloads: 432 },
+        { id: "bruh", name: "Bruh", category: "Memes", soundType: "synth", options: { oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.1 }, pitchDecay: 0.1 }, note: 'G2', duration: "8n", dateAdded: "2025-06-14T10:01:00.000Z", plays: 1250, downloads: 511 },
+        { id: "emotional-damage", name: "Emotional Damage", category: "Memes", soundType: "synth", options: { oscillator: { type: 'sawtooth' }, envelope: { attack: 0.02, decay: 0.3, sustain: 0.2, release: 0.3 } }, noteSequence: [{ time: "0", note: "E4", duration: "16n" }, { time: "0:0:1", note: "D4", duration: "8n" }], dateAdded: "2025-06-13T11:00:00.000Z", plays: 1532, downloads: 604 },
+        { id: "deja-vu", name: "Deja Vu", category: "Memes", soundType: "synth", options: { oscillator: { type: 'pwm', modulationFrequency: 0.2 }, envelope: { attack: 0.2, decay: 0.5, sustain: 0.3, release: 0.8 } }, note: "C#4", duration: "2n", dateAdded: "2025-06-13T11:05:00.000Z", plays: 789, downloads: 256 },
+        { id: "tactical-nuke", name: "Tactical Nuke", category: "Memes", soundType: "noiseSynth", options: { noise: { type: 'white' }, envelope: { attack: 1, decay: 4, sustain: 0, release: 1 }, filter: { type: 'bandpass', Q: 2, frequency: 800 }, filterEnvelope: { attack: 1, decay: 3, baseFrequency: 300, octaves: 4 } }, duration: "1m", volume: -8, dateAdded: "2025-06-12T15:00:00.000Z", plays: 888, downloads: 410 },
+        { id: "troll-laugh", name: "Troll Laugh", category: "Memes", soundType: "synth", options: { oscillator: { type: 'square' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.1, release: 0.1 } }, noteSequence: [{ time: "0", note: "C5", duration: "16n" }, { time: "0:0:0.5", note: "A4", duration: "16n" }, { time: "0:0:1", note: "C5", duration: "16n" }], repeat: 2, dateAdded: "2025-06-12T14:00:00.000Z", plays: 921, downloads: 350 },
+        { id: "oof", name: "Oof", category: "Memes", soundType: "noiseSynth", options: { noise: { type: 'white' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.05 }, filter: { type: 'bandpass', Q: 8, frequency: 1000 } }, duration: "16n", volume: -6, dateAdded: "2025-06-11T09:00:00.000Z", plays: 2345, downloads: 987 },
+        { id: "sad-violin", name: "Sad Violin", category: "Memes", soundType: "synth", options: { oscillator: { type: 'sawtooth', detune: 3 }, envelope: { attack: 0.3, decay: 1, sustain: 0.5, release: 0.8 } }, note: "A3", duration: "1m", dateAdded: "2025-06-11T09:05:00.000Z", plays: 1123, downloads: 456 },
+        { id: "directed-by", name: "Directed By", category: "Memes", soundType: "pluck", options: { resonance: 0.9, release: 0.5 }, note: "G3", duration: "4n", volume: -10, dateAdded: "2025-06-10T16:00:00.000Z", plays: 654, downloads: 210 },
+        { id: "spongebob-fail", name: "SpongeBob Fail", category: "Memes", soundType: "synth", options: { oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.3, sustain: 0, release: 0.1 } }, note: "F#3", duration: "8n", dateAdded: "2025-06-10T16:05:00.000Z", plays: 999, downloads: 399 },
+
+        // Category: Games
+        { id: "mario-coin", name: "Mario Coin", category: "Games", soundType: "synth", options: { oscillator: { type: 'square' }, envelope: { attack: 0.001, decay: 0.15, sustain: 0, release: 0.1 } }, note: "B5", duration: "32n", dateAdded: "2025-06-14T11:00:00.000Z", plays: 3456, downloads: 1234 },
+        { id: "minecraft-door", name: "Minecraft Door", category: "Games", soundType: "noiseSynth", options: { noise: { type: 'pink' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.05, release: 0.1 }, filter: { type: 'lowpass', Q: 2, frequency: 1500 } }, duration: "8n", dateAdded: "2025-06-14T11:01:00.000Z", plays: 2890, downloads: 980 },
+        { id: "among-us-emergency", name: "Among Us Emergency", category: "Games", soundType: "synth", options: { oscillator: { type: 'square' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.5, release: 0.3 } }, noteSequence: [{ time: "0", note: "C5", duration: "8n" }, { time: "0:1", note: "C5", duration: "8n" }], repeat: 2, dateAdded: "2025-06-13T12:00:00.000Z", plays: 2500, downloads: 1100 },
+        { id: "fortnite-shield", name: "Fortnite Shield Pot", category: "Games", soundType: "synth", options: { oscillator: { type: 'fmsine', harmonicity: 1.5 }, envelope: { attack: 0.2, decay: 0.8, sustain: 0.5, release: 1.0 } }, note: "A4", duration: "1m", volume: -9, dateAdded: "2025-06-13T12:05:00.000Z", plays: 1800, downloads: 750 },
+        { id: "zelda-secret", name: "Zelda Secret", category: "Games", soundType: "synth", options: { oscillator: { type: 'triangle' } }, noteSequence: [{ time: "0", note: "G5" }, { time: "0:0:1", note: "F#5" }, { time: "0:0:2", note: "D#5" }, { time: "0:0:3", note: "A4" }, { time: "0:0:4", note: "G#4" }, { time: "0:0:5", note: "E5" }, { time: "0:0:6", note: "G#5" }], dateAdded: "2025-06-12T13:00:00.000Z", plays: 2987, downloads: 1150 },
+        { id: "pacman-waka", name: "Pacman Waka", category: "Games", soundType: "pluck", options: { resonance: 0.8 }, note: "C3", duration: "32n", interval: "16n", count: 4, dateAdded: "2025-06-12T13:05:00.000Z", plays: 1500, downloads: 600 },
+        { id: "metal-gear-alert", name: "Metal Gear Alert", category: "Games", soundType: "synth", options: { oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.5 } }, note: "E5", duration: "4n", volume: -7, dateAdded: "2025-06-11T14:00:00.000Z", plays: 2200, downloads: 950 },
+        { id: "gta-wasted", name: "GTA Wasted", category: "Games", soundType: "noiseSynth", options: { noise: { type: 'white' }, envelope: { attack: 0.5, decay: 2.0, sustain: 0, release: 0.5 }, filter: { type: 'lowpass', Q: 1, frequency: 500 } }, duration: "1m", volume: -4, dateAdded: "2025-06-11T14:05:00.000Z", plays: 1950, downloads: 850 },
+        { id: "sonic-ring", name: "Sonic Ring", category: "Games", soundType: "synth", options: { oscillator: { type: 'triangle' }, envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.1 } }, note: "G#6", duration: "16n", dateAdded: "2025-06-10T15:00:00.000Z", plays: 3100, downloads: 1300 },
+        { id: "skyrim-level-up", name: "Skyrim Level Up", category: "Games", soundType: "synth", options: { oscillator: { type: 'sine', detune: 2 }, partials: [1, 0.2, 0.1], envelope: { attack: 1.0, decay: 1.5, sustain: 0.5, release: 1.0 } }, note: "C4", duration: "2n", volume: -8, dateAdded: "2025-06-10T15:05:00.000Z", plays: 1750, downloads: 700 },
+
+        // Category: Sound Effects
+        { id: "record-scratch", name: "Record Scratch", category: "Sound Effects", soundType: "noiseSynth", options: { noise: { type: "white" }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.05 }, filter: { type: "bandpass", Q: 15, frequency: 1500 }, filterEnvelope: { baseFrequency: 500, octaves: 2, attack: 0.01, decay: 0.05, sustain: 0, release: 0.05, exponent: 2 } }, duration: "8n", dateAdded: "2025-06-14T12:00:00.000Z", plays: 1200, downloads: 450 },
+        { id: "doorbell", name: "Doorbell", category: "Sound Effects", soundType: "synth", options: { oscillator: { type: 'sine' } }, noteSequence: [{ time: "0", note: "G5", duration: "8n" }, { time: "0:0:2", note: "C5", duration: "4n" }], dateAdded: "2025-06-14T12:01:00.000Z", plays: 950, downloads: 320 },
+        { id: "camera-shutter", name: "Camera Shutter", category: "Sound Effects", soundType: "pluck", note: "C7", duration: "32n", volume: -6, dateAdded: "2025-06-13T13:00:00.000Z", plays: 1100, downloads: 400 },
+        { id: "applause", name: "Applause", category: "Sound Effects", soundType: "noise", options: { noise: { type: 'pink', playbackRate: 0.5 }, envelope: { attack: 0.1, decay: 2, sustain: 1, release: 1 } }, duration: "2m", volume: -15, dateAdded: "2025-06-13T13:05:00.000Z", plays: 800, downloads: 280 },
+        { id: "car-horn", name: "Car Horn", category: "Sound Effects", soundType: "synth", options: { oscillator: { type: 'sawtooth', detune: 20 }, envelope: { attack: 0.05, decay: 0.3, sustain: 0.4, release: 0.2 } }, note: "A3", duration: "4n", dateAdded: "2025-06-12T14:00:00.000Z", plays: 880, downloads: 310 },
+        { id: "swoosh", name: "Swoosh", category: "Sound Effects", soundType: "noiseSynth", options: { noise: { type: "pink" }, envelope: { attack: 0.1, decay: 0.3, sustain: 0, release: 0.1 }, filter: { type: "bandpass", Q: 5 }, filterEnvelope: { attack: 0.1, decay: 0.3, baseFrequency: 200, octaves: 2.5 } }, duration: "8n", dateAdded: "2025-06-12T14:05:00.000Z", plays: 1300, downloads: 480 },
+        { id: "explosion", name: "Explosion", category: "Sound Effects", soundType: "noise", options: { noise: { type: "white" }, envelope: { attack: 0.01, decay: 0.5, sustain: 0, release: 0.2 } }, duration: "4n", volume: -10, dateAdded: "2025-06-11T15:00:00.000Z", plays: 1500, downloads: 600 },
+        { id: "punch", name: "Punch", category: "Sound Effects", soundType: "noiseSynth", options: { noise: { type: "white" }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 }, filter: { type: "lowpass", Q: 1, frequency: 800 } }, duration: "16n", volume: -3, dateAdded: "2025-06-11T15:05:00.000Z", plays: 1400, downloads: 550 },
+        { id: "computer-error", name: "Computer Error", category: "Sound Effects", soundType: "synth", options: { oscillator: { type: "square", detune: -10 }, envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.1 } }, noteSequence: [{ time: 0, note: "G#3", duration: "16n" }, { time: "0:0:0.5", note: "G3", duration: "8n" }], dateAdded: "2025-06-10T16:00:00.000Z", plays: 1600, downloads: 620 },
+        { id: "magic-sparkle", name: "Magic Sparkle", category: "Sound Effects", soundType: "synth", options: { oscillator: { type: "triangle" }, envelope: { attack: 0.005, decay: 0.3, sustain: 0.05, release: 0.2 }, volume: -8 }, noteSequence: [{ time: "0", note: "C6", duration: "32n" }, { time: "0:0:0.2", note: "E6", duration: "32n" }, { time: "0:0:0.4", note: "G6", duration: "32n" }, { time: "0:0:0.6", note: "C7", duration: "16n" }], dateAdded: "2025-06-10T16:05:00.000Z", plays: 1050, downloads: 380 },
+
+        // Category: Anime
+        { id: "nani", name: "Nani?!", category: "Anime", soundType: "synth", options: { oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.1, release: 0.2 }, filter: { type: 'highpass', frequency: 1500 } }, note: "E6", duration: "16n", dateAdded: "2025-06-14T13:00:00.000Z", plays: 2800, downloads: 1100 },
+        { id: "omae-wa-mou", name: "Omae wa mou", category: "Anime", soundType: "noiseSynth", options: { noise: { type: 'white' }, envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 }, filter: { type: 'bandpass', Q: 20, frequency: 2000 } }, duration: "16n", dateAdded: "2025-06-14T13:01:00.000Z", plays: 2500, downloads: 980 },
+        { id: "rasengan", name: "Rasengan", category: "Anime", soundType: "noiseSynth", options: { noise: { type: 'pink' }, envelope: { attack: 0.5, decay: 1.5, sustain: 0.8, release: 1.0 }, filter: { type: 'bandpass', Q: 4 }, filterEnvelope: { attack: 0.5, decay: 1.5, baseFrequency: 400, octaves: 3 } }, duration: "2n", volume: -9, dateAdded: "2025-06-13T14:00:00.000Z", plays: 2200, downloads: 850 },
+        { id: "kamehameha", name: "Kamehameha", category: "Anime", soundType: "noiseSynth", options: { noise: { type: 'white' }, envelope: { attack: 2.0, decay: 3.0, sustain: 1.0, release: 1.5 }, filter: { type: 'lowpass', Q: 2 }, filterEnvelope: { attack: 2.0, decay: 2.0, baseFrequency: 200, octaves: 5 } }, duration: "1m", volume: -7, dateAdded: "2025-06-13T14:05:00.000Z", plays: 2600, downloads: 1050 },
+        { id: "ara-ara", name: "Ara Ara", category: "Anime", soundType: "synth", options: { oscillator: { type: 'sine' }, envelope: { attack: 0.1, decay: 0.2, sustain: 0.3, release: 0.3 } }, noteSequence: [{ time: "0", note: "A4", duration: "8n" }, { time: "0:1", note: "G#4", duration: "4n" }], dateAdded: "2025-06-12T15:00:00.000Z", plays: 1900, downloads: 700 },
+        { id: "to-be-continued", name: "To Be Continued", category: "Anime", soundType: "pluck", options: { resonance: 0.95 }, note: "D4", duration: "2n", dateAdded: "2025-06-12T15:05:00.000Z", plays: 1800, downloads: 650 },
+        { id: "yare-yare-daze", name: "Yare Yare Daze", category: "Anime", soundType: "synth", options: { oscillator: { type: 'square', width: 0.6 }, envelope: { attack: 0.05, decay: 0.3, sustain: 0.1, release: 0.2 } }, note: "C3", duration: "4n", dateAdded: "2025-06-11T16:00:00.000Z", plays: 1600, downloads: 580 },
+        { id: "za-warudo", name: "Za Warudo", category: "Anime", soundType: "noiseSynth", options: { noise: { type: 'brown' }, envelope: { attack: 0.2, decay: 1.0, sustain: 0.5, release: 0.8 }, filter: { type: 'lowpass', frequency: 150 } }, duration: "1m", volume: -6, dateAdded: "2025-06-11T16:05:00.000Z", plays: 2100, downloads: 800 },
+        { id: "nico-nico-nii", name: "Nico Nico Nii", category: "Anime", soundType: "synth", options: { oscillator: { type: 'triangle' } }, noteSequence: [{ time: "0", note: "G5" }, { time: "0:0:2", note: "G5" }, { time: "0:1", note: "A5" }, { time: "0:1:2", note: "A5" }, { time: "0:2", note: "G5" }], dateAdded: "2025-06-10T17:00:00.000Z", plays: 1700, downloads: 620 },
+        { id: "wow-sound", name: "Anime Wow", category: "Anime", soundType: "synth", options: { oscillator: { type: 'sine' }, envelope: { attack: 0.05, decay: 0.1, sustain: 0, release: 0.1 } }, note: "C6", duration: "16n", dateAdded: "2025-06-10T17:05:00.000Z", plays: 1500, downloads: 550 },
+    ];
+
+
+        // --- DOM ELEMENTS ---
+        const searchInput = document.getElementById('searchInput');
+        const noResultsMessage = document.getElementById('noResultsMessage');
+        const categorySelectMobile = document.getElementById('categorySelectMobile');
+        const shareLinkInput = document.getElementById('shareLinkInput');
+        const copyLinkButton = document.getElementById('copyLinkButton');
+        let shareModalInstance = null; 
+
+        const homePageSectionsDiv = document.getElementById('homePageSections');
+        const homeHeader = document.getElementById('homeHeader');
+        const homeIntroFaqSection = document.getElementById('homeIntroFaqSection');
+        const soundButtonGridContainer = document.getElementById('soundButtonGridContainer');
+        const allCategoriesContainer = document.getElementById('allCategoriesContainer');
+        const allCategoriesGrid = document.getElementById('allCategoriesGrid');
+        const latestSoundsContainer = document.getElementById('latestSoundsContainer');
+        const popularSoundsContainer = document.getElementById('popularSoundsContainer');
+        const trendingSoundsContainer = document.getElementById('trendingSoundsContainer');
+        
+        const soundPostPageContainer = document.getElementById('soundPostPageContainer');
+        const contactPageContainer = document.getElementById('contactPageContainer');
+        const privacyPageContainer = document.getElementById('privacyPageContainer');
+        const termsPageContainer = document.getElementById('termsPageContainer');
+
+        const backToGridButton = document.getElementById('backToGridButton');
+        const mainContentArea = document.getElementById('mainContentArea');
+        const mainPageTitleContainer = document.getElementById('mainPageTitleContainer');
+        
+        const sidebarArea = document.getElementById('sidebarArea'); 
+        const relatedSoundsPostContainer = document.getElementById('relatedSoundsPostContainer'); 
+        const categoryListOnPostPage = document.getElementById('categoryListOnPostPage'); 
+
+        const sidebarPopularSoundsContainer = document.getElementById('sidebarPopularSoundsContainer');
+        const sidebarTrendingSoundsContainer = document.getElementById('sidebarTrendingSoundsContainer');
+        const breadcrumbsContainer = document.getElementById('breadcrumbsContainer');
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const backToTopBtn = document.getElementById('backToTopBtn');
+
+
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        document.getElementById('siteTitleLink').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('navHome').click(); });
+
+        // --- STATE ---
+        let synths = {};
+        let currentFilter = {
+            searchTerm: '', category: 'all', sortBy: null, 
+            viewMode: 'home', 
+            currentSoundId: null, 
+            previousHash: null,
+            currentBreadcrumbs: []
+        };
+        const ITEMS_PER_HOMEPAGE_SECTION_GRID = 8; // Adjusted to show 2 rows of 4
+        const ITEMS_PER_SIDEBAR_LIST = 5;
+        let currentlyPlaying = { 
+            soundId: null, 
+            buttonElement: null, 
+            originalContent: null, 
+            isPostButton: false,
+            soundName: null, 
+            isPaused: false 
+        };
+
+        // --- ICONS ---
+        const playIconHTML = `<i class="bi bi-play-circle-fill"></i>`;
+        const pauseIconHTML = `<i class="bi bi-pause-circle-fill"></i>`; 
+        const playingIndicatorHTML = `
+            <div class="playing-indicator-container">
+                <div class="playing-indicator-bar"></div>
+                <div class="playing-indicator-bar"></div>
+                <div class="playing-indicator-bar"></div>
+            </div>`;
+        const downloadIconHTML = `<i class="bi bi-download"></i>`;
+        const shareIconHTML = `<i class="bi bi-share-fill"></i>`;
+        const loadingIconHTML = `<div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>`;
+        const playCountIconHTML = `<i class="bi bi-headphones"></i>`;
+        const downloadCountIconHTML = `<i class="bi bi-cloud-arrow-down-fill"></i>`;
+
+        // --- AUDIO HANDLING ---
+        function resetCurrentlyPlayingButton(fullReset = true) {
+            if (currentlyPlaying.buttonElement) {
+                if (currentlyPlaying.isPostButton) {
+                    currentlyPlaying.buttonElement.innerHTML = playIconHTML + ` ${currentlyPlaying.soundName || "Play Sound"}`;
+                    currentlyPlaying.buttonElement.classList.remove('btn-danger', 'btn-warning');
+                    currentlyPlaying.buttonElement.classList.add('btn-success');
+                } else { 
+                    const iconContainer = currentlyPlaying.buttonElement.querySelector('.play-icon-container');
+                    if(iconContainer) iconContainer.innerHTML = playIconHTML;
+                }
+            }
+            if (fullReset) {
+                 currentlyPlaying = { soundId: null, buttonElement: null, originalContent: null, isPostButton: false, soundName: null, isPaused: false };
+            } else { 
+                currentlyPlaying.isPaused = false; 
+            }
+        }
+
+        async function playSound(sound, buttonElement, isPostPageButton = false) {
+            try {
+                await Tone.start();
+                const iconContainer = isPostPageButton ? buttonElement : buttonElement.querySelector('.play-icon-container');
+
+                if (currentlyPlaying.soundId === sound.id) {
+                    if (currentlyPlaying.isPaused) { 
+                        if (synths[sound.id] instanceof Tone.Part) Tone.Transport.start();
+                        else if (synths[sound.id]) {
+                             if (typeof synths[sound.id].dispose === 'function') synths[sound.id].dispose();
+                             delete synths[sound.id];
+                        }
+                        currentlyPlaying.isPaused = false;
+                        if (isPostPageButton) {
+                            buttonElement.innerHTML = pauseIconHTML + " Stop";
+                            buttonElement.classList.remove('btn-warning', 'btn-success');
+                            buttonElement.classList.add('btn-danger');
+                        } else {
+                            iconContainer.innerHTML = pauseIconHTML;
+                        }
+                        if (!(synths[sound.id] instanceof Tone.Part)) {
+                           const tempSoundId = currentlyPlaying.soundId;
+                           resetCurrentlyPlayingButton(false);
+                           currentlyPlaying.soundId = tempSoundId;
+                        } else {
+                           return;
+                        }
+
+                    } else {
+                        if (synths[sound.id] instanceof Tone.Part) {
+                            Tone.Transport.pause();
+                            currentlyPlaying.isPaused = true;
+                            if (isPostPageButton) {
+                                buttonElement.innerHTML = playIconHTML + ` Resume`;
+                                buttonElement.classList.remove('btn-danger');
+                                buttonElement.classList.add('btn-warning'); 
+                            } else {
+                                iconContainer.innerHTML = playIconHTML;
+                            }
+                        } else { 
+                            if (synths[sound.id] && typeof synths[sound.id].dispose === 'function') {
+                                synths[sound.id].dispose(); delete synths[sound.id];
+                            }
+                            resetCurrentlyPlayingButton(); 
+                        }
+                        return;
+                    }
+                }
+
+                if (currentlyPlaying.soundId && currentlyPlaying.soundId !== sound.id) {
+                    if (synths[currentlyPlaying.soundId] instanceof Tone.Part) { Tone.Transport.stop(); if(synths[currentlyPlaying.soundId] && !synths[currentlyPlaying.soundId].disposed) synths[currentlyPlaying.soundId].dispose(); }
+                    else if (synths[currentlyPlaying.soundId] && typeof synths[currentlyPlaying.soundId].dispose === 'function') { synths[currentlyPlaying.soundId].dispose(); }
+                    delete synths[currentlyPlaying.soundId];
+                }
+                resetCurrentlyPlayingButton(); 
+
+                if (synths[sound.id] && typeof synths[sound.id].dispose === 'function') { synths[sound.id].dispose(); delete synths[sound.id]; } 
+
+                let synth; const volume = sound.volume !== undefined ? sound.volume : 0;
+                switch (sound.soundType) {
+                    case "synth": synth = new Tone.Synth(sound.options).toDestination(); synth.volume.value = volume; if (sound.noteSequence) { const part = new Tone.Part((time, value) => synth.triggerAttackRelease(value.note, value.duration, time), sound.noteSequence).start(0); part.loop = sound.repeat || false; Tone.Transport.start(); synths[sound.id] = part; if (!sound.repeat) { const d = sound.noteSequence.reduce((a,v)=>Math.max(a,Tone.Time(v.time).toSeconds()+Tone.Time(v.duration||0).toSeconds()),0); setTimeout(()=>{if(synths[sound.id]===part){if(Tone.Transport.state==="started" && !part.loop)Tone.Transport.stop();if(!part.disposed)part.dispose();if(synth&&!synth.disposed)synth.dispose();if(currentlyPlaying.soundId===sound.id)resetCurrentlyPlayingButton();delete synths[sound.id]}},d*1e3+200)}} else { synth.triggerAttackRelease(sound.note, sound.duration); synths[sound.id] = synth } break;
+                    case "noise": case "noiseSynth": synth = new Tone.NoiseSynth(sound.options).toDestination(); synth.volume.value = volume; synth.triggerAttackRelease(sound.duration); synths[sound.id] = synth; break;
+                    case "pluck": synth = new Tone.PluckSynth(sound.options).toDestination(); synth.volume.value = volume; if (sound.interval && sound.count) { for (let i=0;i<sound.count;i++) synth.triggerAttack(sound.note,`+${i*Tone.Time(sound.interval).toSeconds()}`)} else { synth.triggerAttackRelease(sound.note,sound.duration)} synths[sound.id]=synth; break;
+                    default: console.error("Unknown sound type:", sound.soundType); return;
+                }
+
+                if (isPostPageButton) {
+                    buttonElement.innerHTML = pauseIconHTML + " Stop"; 
+                    buttonElement.classList.remove('btn-success', 'btn-warning');
+                    buttonElement.classList.add('btn-danger');
+                } else {
+                    iconContainer.innerHTML = pauseIconHTML;
+                }
+                currentlyPlaying.soundId = sound.id;
+                currentlyPlaying.buttonElement = buttonElement; 
+                currentlyPlaying.isPostButton = isPostPageButton;
+                currentlyPlaying.isPaused = false;
+                currentlyPlaying.soundName = sound.name;
+
+                if (!isPostPageButton) { 
+                    sound.plays = (sound.plays || 0) + 1;
+                    const playsDisplayCard = document.getElementById(`plays-${sound.id}`);
+                    if (playsDisplayCard) playsDisplayCard.textContent = sound.plays;
+                    const playsDisplayPost = document.getElementById('postPlayCount');
+                    if (playsDisplayPost && currentFilter.viewMode === 'post' && currentFilter.currentSoundId === sound.id) playsDisplayPost.textContent = sound.plays;
+                    if (currentFilter.viewMode === 'home' || currentFilter.viewMode === 'grid' || currentFilter.viewMode === 'allCategories') { displaySidebarContent(); }
+                }
+
+                if (synths[sound.id] && !(synths[sound.id] instanceof Tone.Part && synths[sound.id].loop)) {
+                    let actualDuration;
+                    if (synths[sound.id] instanceof Tone.Part) { 
+                        actualDuration = sound.noteSequence.reduce((acc, val) => Math.max(acc, Tone.Time(val.time).toSeconds() + Tone.Time(val.duration || 0).toSeconds()), 0);
+                    } else { 
+                        actualDuration = Tone.Time(sound.duration || "1m").toSeconds();
+                         if (sound.options?.envelope) { const env = sound.options.envelope; actualDuration = (env.attack || 0) + (env.decay || 0) + (env.sustain || 0) + (env.release || 0) + 0.1; }
+                    }
+                    
+                    setTimeout(() => {
+                        if (currentlyPlaying.soundId === sound.id && !currentlyPlaying.isPaused && synths[sound.id]) {
+                            if (synths[sound.id] instanceof Tone.Part) { if (Tone.Transport.state === "started") Tone.Transport.stop(); if(!synths[sound.id].disposed) synths[sound.id].dispose(); }
+                            else if (typeof synths[sound.id].dispose === 'function') { synths[sound.id].dispose(); }
+                            delete synths[sound.id];
+                            resetCurrentlyPlayingButton();
+                        }
+                    }, (actualDuration + 0.2) * 1000); 
+                }
+            } catch (error) { console.error("Error playing sound:", sound.name, error); resetCurrentlyPlayingButton(); }
+        }
+        
+        function audioBufferToWav(a){let b=a.numberOfChannels,c=a.length*b*2+44,d=new ArrayBuffer(c),e=new DataView(d),f=[],g,h,i=0,j=0;function k(l){e.setUint16(j,l,true);j+=2}function m(l){e.setUint32(j,l,true);j+=4}m(1179011410);m(c-8);m(1463899717);m(1718449184);m(16);k(1);k(b);m(a.sampleRate);m(a.sampleRate*2*b);k(b*2);k(16);m(1635017060);m(c-j-4);for(g=0;g<a.numberOfChannels;g++)f.push(a.getChannelData(g));while(j<c){for(g=0;g<b;g++){h=Math.max(-1,Math.min(1,f[g][i]));h=(0.5+h<0?h*32768:h*32767)|0;e.setInt16(j,h,true);j+=2}i++}return new Blob([d],{type:"audio/wav"})}
+        async function handleDownload(a,b){const c=b.innerHTML;b.innerHTML=loadingIconHTML;b.disabled=!0;try{await Tone.start();let d=Tone.Time(a.duration||"1m").toSeconds();a.noteSequence?d=a.noteSequence.reduce((f,g)=>Math.max(f,Tone.Time(g.time).toSeconds()+Tone.Time(g.duration||0).toSeconds()),0):a.soundType==="noiseSynth"||a.soundType==="noise"?d=Tone.Time(a.duration).toSeconds():a.options?.envelope&&(d=(a.options.envelope.attack||0)+(a.options.envelope.decay||0)+(a.options.envelope.sustain||0)+(a.options.envelope.release||0)+.2);const e=await Tone.Offline(async g=>{let h;const i=a.volume!==void 0?a.volume:0;switch(a.soundType){case"synth":h=new Tone.Synth(a.options).toDestination();h.volume.value=i;if(a.noteSequence){const j=(new Tone.Part((k,l)=>h.triggerAttackRelease(l.note,l.duration,k),a.noteSequence)).start(0);j.loop=a.repeat||!1;a.repeat&&(j.loopEnd=d)}else h.triggerAttackRelease(a.note,a.duration,0);break;case"noise":case"noiseSynth":h=new Tone.NoiseSynth(a.options).toDestination();h.volume.value=i;h.triggerAttackRelease(a.duration,0);break;case"pluck":h=new Tone.PluckSynth(a.options).toDestination();h.volume.value=i;a.interval&&a.count?(()=>{for(let j=0;j<a.count;j++)h.triggerAttack(a.note,`+${j*Tone.Time(a.interval).toSeconds()}`)})():h.triggerAttackRelease(a.note,a.duration,0);break}g.start()},d+.1);const f=audioBufferToWav(e),g=URL.createObjectURL(f),h=document.createElement("a");h.style.display="none";h.href=g;h.download=`${a.name.replace(/[^a-z0-9]/gi,"_").toLowerCase()}.wav`;document.body.appendChild(h);h.click();URL.revokeObjectURL(g);h.remove();a.downloads=(a.downloads||0)+1;const i=document.getElementById(`downloads-${a.id}`);i&&(i.textContent=a.downloads);const j=document.getElementById("postDownloadCount");j&&currentFilter.viewMode==="post"&&currentFilter.currentSoundId===a.id&&(j.textContent=a.downloads);if (currentFilter.viewMode === 'home' || currentFilter.viewMode === 'grid' || currentFilter.viewMode === 'allCategories') { displaySidebarContent(); }}catch(a){console.error("Error downloading sound:",a.name,a)}finally{b.innerHTML=downloadIconHTML;b.disabled=!1}}
+        function handleShare(s){const u=`${location.origin}${location.pathname}#post-${s.id}`,d={title:`Sound: ${s.name}`,text:`Listen to the sound "${s.name}" at SoundBoardW.com!`,url:u};navigator.share?navigator.share(d).catch(e=>openShareModal(u)):openShareModal(u)}
+        function openShareModal(url) { shareLinkInput.value = url; if (!shareModalInstance) { shareModalInstance = new bootstrap.Modal(document.getElementById('shareModal')); } shareModalInstance.show(); }
+        copyLinkButton.addEventListener('click',()=>{shareLinkInput.select();try{document.execCommand('copy');copyLinkButton.textContent='Copied!';setTimeout(()=>copyLinkButton.textContent='Copy Link',2e3)}catch(a){navigator.clipboard.writeText(shareLinkInput.value).then(()=>{copyLinkButton.textContent='Copied!';setTimeout(()=>copyLinkButton.textContent='Copy Link',2e3)}).catch(b=>console.error('Could not copy.'))}});
+        
+        // --- UI RENDERING ---
+        function createSoundCard(sound, isRelated = false) {
+            const itemWrapper = document.createElement('div');
+            itemWrapper.className = 'sound-button-item-wrapper'; 
+            if(!isRelated) itemWrapper.classList.add('col'); 
+            itemWrapper.id = `sound-card-${sound.id}`;
+
+            const buttonMain = document.createElement('div');
+            buttonMain.className = 'sound-button-main';
+            const randomBaseColor = getRandomColor();
+            buttonMain.style.background = `radial-gradient(circle at 70% 30%, ${adjustHslLightness(randomBaseColor, 10)}, ${randomBaseColor})`;
+            const buttonTextColor = getTextColorForBg(randomBaseColor); 
+            buttonMain.style.color = buttonTextColor;
+            
+            const playIconContainer = document.createElement('div');
+            playIconContainer.className = 'play-icon-container'; 
+            if (currentlyPlaying.soundId === sound.id && !currentlyPlaying.isPostButton) {
+                playIconContainer.innerHTML = currentlyPlaying.isPaused ? playIconHTML : pauseIconHTML;
+            } else {
+                playIconContainer.innerHTML = playIconHTML;
+            }
+            buttonMain.appendChild(playIconContainer);
+            
+            buttonMain.addEventListener('click', () => playSound(sound, buttonMain, false)); 
+            itemWrapper.appendChild(buttonMain);
+
+            const nameLink = document.createElement('a'); 
+            nameLink.href = `#post-${sound.id}`;
+            nameLink.className = 'sound-button-name-link'; 
+            nameLink.textContent = sound.name;
+            itemWrapper.appendChild(nameLink);
+
+            if (!isRelated) { 
+                const controlsDiv = document.createElement('div');
+                controlsDiv.className = 'sound-button-controls';
+                const downloadButton = document.createElement('button'); 
+                downloadButton.innerHTML = downloadIconHTML; 
+                downloadButton.title = "Download";
+                downloadButton.className = 'btn btn-sm btn-outline-secondary border-0 rounded-circle p-1'; 
+                downloadButton.addEventListener('click', (e) => { e.stopPropagation(); handleDownload(sound, downloadButton); });
+                const shareButton = document.createElement('button'); 
+                shareButton.innerHTML = shareIconHTML; 
+                shareButton.title = "Share";
+                shareButton.className = 'btn btn-sm btn-outline-secondary border-0 rounded-circle p-1'; 
+                shareButton.addEventListener('click', (e) => { e.stopPropagation(); handleShare(sound); });
+                controlsDiv.appendChild(downloadButton); 
+                controlsDiv.appendChild(shareButton);
+                itemWrapper.appendChild(controlsDiv);
+                
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'text-muted small mt-1 d-flex justify-content-center gap-2 w-100';
+                infoDiv.innerHTML = `
+                    <span class="d-flex align-items-center" title="Plays">${playCountIconHTML}<span id="plays-${sound.id}" class="ms-1">${sound.plays || 0}</span></span>
+                    <span class="d-flex align-items-center" title="Downloads">${downloadCountIconHTML}<span id="downloads-${sound.id}" class="ms-1">${sound.downloads || 0}</span></span>
+                `;
+                itemWrapper.appendChild(infoDiv);
+            }
+            return itemWrapper;
+        }
+
+        function displaySoundsInGrid(sounds, containerElement, isRelatedSidebar = false) {
+            containerElement.innerHTML = "";
+            if (sounds.length === 0) {
+                containerElement.innerHTML = `<p class="text-muted col-12 text-center py-4 px-2">No sounds found${isRelatedSidebar ? ' in this category' : ''}.</p>`;
+                return;
+            }
+            sounds.forEach(sound => {
+                const cardElement = createSoundCard(sound, isRelatedSidebar);
+                containerElement.appendChild(cardElement); 
+            });
+        }
+        
+        function displayLatestSounds(){const a=[...soundButtonsData].sort((b,c)=>new Date(c.dateAdded)-new Date(b.dateAdded)).slice(0,ITEMS_PER_HOMEPAGE_SECTION_GRID);displaySoundsInGrid(a,latestSoundsContainer)}
+        function displayPopularSounds(){const a=[...soundButtonsData].sort((b,c)=>(c.plays||0)-(b.plays||0)).slice(0,ITEMS_PER_HOMEPAGE_SECTION_GRID);displaySoundsInGrid(a,popularSoundsContainer)}
+        function displayTrendingSounds(){const a=[...soundButtonsData].sort((b,c)=>(c.downloads||0)-(b.downloads||0)).slice(0,ITEMS_PER_HOMEPAGE_SECTION_GRID);displaySoundsInGrid(a,trendingSoundsContainer)}
+
+        function displayFilteredSounds(){const a=currentFilter.searchTerm.toLowerCase().trim(),b=currentFilter.category;let c=[...soundButtonsData];currentFilter.sortBy==="latest"?c.sort((d,e)=>new Date(e.dateAdded)-new Date(d.dateAdded)):currentFilter.sortBy==="popular"?c.sort((d,e)=>(e.plays||0)-(d.plays||0)):currentFilter.sortBy==="trending"&&c.sort((d,e)=>(e.downloads||0)-(d.downloads||0));const d=c.filter(e=>{const f=a===""||e.name.toLowerCase().includes(a)||e.category.toLowerCase().includes(a)||e.id&&e.id.toLowerCase().includes(a),g=b==="all"||currentFilter.sortBy||e.category===b;return f&&g});soundButtonGridContainer.innerHTML="";d.length===0?noResultsMessage.classList.remove("d-none"):(noResultsMessage.classList.add("d-none"),d.forEach(e=>{const f=createSoundCard(e); soundButtonGridContainer.appendChild(f) }))} 
+        
+        function displayAllCategoriesPage() {
+            currentFilter.viewMode = 'allCategories';
+            hideAllMainSections();
+            allCategoriesContainer.classList.remove('d-none');
+            sidebarArea.classList.remove('d-none'); 
+            updatePageTitle("All Categories");
+            updateBreadcrumbs();
+            allCategoriesGrid.innerHTML = '';
+            const categories = [...new Set(soundButtonsData.map(s => s.category))].sort();
+            categories.forEach(category => {
+                const col = document.createElement('div');
+                col.className = 'col';
+                const link = document.createElement('a');
+                link.href = `#category-${category.toLowerCase().replace(/\s+/g, '-')}`;
+                link.className = 'btn btn-outline-primary w-100 p-3 text-truncate';
+                link.textContent = category;
+                col.appendChild(link);
+                allCategoriesGrid.appendChild(col);
+            });
+        }
+
+        function displaySidebarContent() {
+            const popularSidebar = [...soundButtonsData].sort((a, b) => (b.plays || 0) - (a.plays || 0)).slice(0, ITEMS_PER_SIDEBAR_LIST);
+            sidebarPopularSoundsContainer.innerHTML = '';
+            popularSidebar.forEach(sound => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                li.innerHTML = `
+                    <a href="#post-${sound.id}" class="text-truncate me-2" title="${sound.name}">${sound.name}</a>
+                    <span class="badge bg-primary rounded-pill">${sound.plays || 0}</span>
+                `;
+                sidebarPopularSoundsContainer.appendChild(li);
+            });
+
+            const trendingSidebar = [...soundButtonsData].sort((a, b) => (b.downloads || 0) - (a.downloads || 0)).slice(0, ITEMS_PER_SIDEBAR_LIST);
+            sidebarTrendingSoundsContainer.innerHTML = '';
+            trendingSidebar.forEach(sound => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                li.innerHTML = `
+                    <a href="#post-${sound.id}" class="text-truncate me-2" title="${sound.name}">${sound.name}</a>
+                    <span class="badge bg-success rounded-pill">${sound.downloads || 0}</span>
+                `;
+                sidebarTrendingSoundsContainer.appendChild(li);
+            });
+        }
+
+        function hideAllMainSections() {
+            homePageSectionsDiv.classList.add('d-none');
+            homeHeader.classList.add('d-none'); 
+            homeIntroFaqSection.classList.add('d-none');
+            soundButtonGridContainer.classList.add('d-none');
+            soundPostPageContainer.classList.add('d-none');
+            allCategoriesContainer.classList.add('d-none');
+            contactPageContainer.classList.add('d-none');
+            privacyPageContainer.classList.add('d-none');
+            termsPageContainer.classList.add('d-none');
+            noResultsMessage.classList.add('d-none');
+        }
+        
+        function updatePageTitle(title = "") {
+            mainPageTitleContainer.innerHTML = title ? `<h1 class="section-title">${title}</h1>` : "";
+        }
+
+
+        function showHomePageSections() {
+            currentFilter.viewMode = 'home';
+            hideAllMainSections();
+            homePageSectionsDiv.classList.remove('d-none');
+            homeHeader.classList.remove('d-none');
+            homeIntroFaqSection.classList.remove('d-none');
+            sidebarArea.classList.remove('d-none'); 
+            currentFilter.sortBy = null; 
+            currentFilter.currentSoundId = null;
+            currentFilter.category = 'all'; 
+            if(currentlyPlaying.soundId && !currentlyPlaying.isPostButton) resetCurrentlyPlayingButton(true);
+            updatePageTitle(""); 
+            updateBreadcrumbs();
+            displayLatestSounds(); displayPopularSounds(); displayTrendingSounds();
+            displaySidebarContent();
+        }
+
+        function showFilteredResultsView(isViewMoreAction = false) { 
+            currentFilter.viewMode = 'grid';
+            hideAllMainSections();
+            soundButtonGridContainer.classList.remove('d-none');
+            sidebarArea.classList.remove('d-none');
+            if(currentlyPlaying.soundId && !currentlyPlaying.isPostButton) resetCurrentlyPlayingButton(true);
+
+            let pageTitle = "All Sounds";
+            if (currentFilter.sortBy) {
+                if(currentFilter.sortBy === 'latest') pageTitle = 'Latest Sounds';
+                else if(currentFilter.sortBy === 'popular') pageTitle = 'Most Popular Sounds';
+                else if(currentFilter.sortBy === 'trending') pageTitle = 'Trending Sounds';
+                currentFilter.category = 'all'; 
+            } else if (currentFilter.category !== 'all') {
+                pageTitle = `Category: ${currentFilter.category}`;
+            }
+            
+            updatePageTitle(pageTitle);
+            updateBreadcrumbs();
+            displayFilteredSounds();
+            displaySidebarContent();
+        }
+        
+        function showSoundPostPage(soundId) {
+            currentFilter.viewMode = 'post'; currentFilter.currentSoundId = soundId;
+            hideAllMainSections();
+            soundPostPageContainer.classList.remove('d-none'); 
+            sidebarArea.classList.remove('d-none');
+
+            const sound = soundButtonsData.find(s => s.id === soundId);
+            if (!sound) { 
+                soundPostPageContainer.innerHTML = '<p class="text-danger text-center py-5">Sorry, this sound could not be found.</p>'; 
+                updatePageTitle("Not Found");
+                updateBreadcrumbs(); 
+                return; 
+            }
+            currentFilter.category = sound.category; 
+            
+            updatePageTitle(""); 
+            updateBreadcrumbs();
+
+            document.getElementById('postSoundName').textContent = sound.name;
+            const categoryLinkEl = document.querySelector('#postSoundCategory a');
+            categoryLinkEl.textContent = sound.category;
+            categoryLinkEl.href = `#category-${sound.category.toLowerCase().replace(/\s+/g, '-')}`;
+            document.querySelector('#postSoundDate span').textContent = new Date(sound.dateAdded).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('postPlayCount').textContent = sound.plays || 0;
+            document.getElementById('postDownloadCount').textContent = sound.downloads || 0;
+
+            const postPlayBtnContainer = document.getElementById('postPlayButtonContainer');
+            postPlayBtnContainer.innerHTML = ''; 
+            const postPlayBtn = document.createElement('button');
+            postPlayBtn.className = 'btn btn-lg main-play-button d-inline-flex align-items-center justify-content-center shadow-lg';
+            
+            if (currentlyPlaying.soundId === sound.id && currentlyPlaying.isPostButton) {
+                postPlayBtn.innerHTML = (currentlyPlaying.isPaused ? playIconHTML : pauseIconHTML) + (currentlyPlaying.isPaused ? ` Resume` : " Stop");
+                postPlayBtn.classList.add(currentlyPlaying.isPaused ? 'btn-warning' : 'btn-danger');
+            } else {
+                postPlayBtn.innerHTML = playIconHTML + ` Play Sound`;
+                postPlayBtn.classList.add('btn-success');
+            }
+            postPlayBtn.addEventListener('click', () => playSound(sound, postPlayBtn, true));
+            postPlayBtnContainer.appendChild(postPlayBtn);
+
+            const postControls = document.getElementById('postControlsContainer');
+            postControls.innerHTML = '';
+            const dlBtn = document.createElement('button');
+            dlBtn.innerHTML = downloadIconHTML + " Download (.wav)";
+            dlBtn.className = 'btn btn-info text-white px-4 py-2 rounded-pill'; 
+            dlBtn.addEventListener('click', () => handleDownload(sound, dlBtn));
+            postControls.appendChild(dlBtn);
+
+            const shBtn = document.createElement('button');
+            shBtn.innerHTML = shareIconHTML + " Share";
+            shBtn.className = 'btn btn-outline-secondary px-4 py-2 rounded-pill'; 
+            shBtn.addEventListener('click', () => handleShare(sound));
+            postControls.appendChild(shBtn);
+            
+            const related = soundButtonsData.filter(s => s.category === sound.category && s.id !== sound.id).sort((a,b) => (b.plays || 0) - (a.plays || 0)).slice(0, 8); 
+            relatedSoundsPostContainer.innerHTML = ''; 
+            if (related.length > 0) {
+                 displaySoundsInGrid(related, relatedSoundsPostContainer, true); 
+            } else {
+                relatedSoundsPostContainer.innerHTML = '<p class="text-muted p-3 text-center small">No other sounds found in this category.</p>';
+            }
+
+            categoryListOnPostPage.innerHTML = '';
+            const allCategories = [...new Set(soundButtonsData.map(s => s.category))].sort();
+            allCategories.forEach(cat => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item';
+                const link = document.createElement('a');
+                link.href = `#category-${cat.toLowerCase().replace(/\s+/g, '-')}`;
+                link.textContent = cat;
+                li.appendChild(link);
+                categoryListOnPostPage.appendChild(li);
+            });
+            
+            displaySidebarContent(); 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        }
+        
+        function showStaticPage(pageId, title) {
+            currentFilter.viewMode = pageId;
+            hideAllMainSections();
+            document.getElementById(`${pageId}PageContainer`).classList.remove('d-none');
+            sidebarArea.classList.remove('d-none');
+            updatePageTitle(title);
+            updateBreadcrumbs();
+            displaySidebarContent();
+        }
+
+
+        function updateBreadcrumbs() {
+            breadcrumbsContainer.innerHTML = '';
+            const ol = document.createElement('ol');
+            ol.className = 'breadcrumb';
+
+            const homeItem = document.createElement('li');
+            homeItem.className = 'breadcrumb-item';
+            const homeLink = document.createElement('a');
+            homeLink.href = '#';
+            homeLink.textContent = 'Home';
+            homeItem.appendChild(homeLink);
+            ol.appendChild(homeItem);
+
+            if (currentFilter.viewMode === 'allCategories') {
+                const catItem = document.createElement('li');
+                catItem.className = 'breadcrumb-item active';
+                catItem.setAttribute('aria-current', 'page');
+                catItem.textContent = 'All Categories';
+                ol.appendChild(catItem);
+            } else if (currentFilter.sortBy) {
+                const sortItem = document.createElement('li');
+                sortItem.className = 'breadcrumb-item active';
+                let sortText = '';
+                if(currentFilter.sortBy === 'latest') sortText = 'Latest';
+                else if(currentFilter.sortBy === 'popular') sortText = 'Popular';
+                else if(currentFilter.sortBy === 'trending') sortText = 'Trending';
+                sortItem.textContent = sortText;
+                ol.appendChild(sortItem);
+            } else if (currentFilter.category !== 'all' && currentFilter.viewMode === 'grid') {
+                const catItem = document.createElement('li');
+                catItem.className = 'breadcrumb-item active';
+                catItem.textContent = currentFilter.category;
+                ol.appendChild(catItem);
+            } else if (currentFilter.viewMode === 'post' && currentFilter.currentSoundId) {
+                const sound = soundButtonsData.find(s => s.id === currentFilter.currentSoundId);
+                if (sound) {
+                    const catLinkItem = document.createElement('li');
+                    catLinkItem.className = 'breadcrumb-item';
+                    const catLinkA = document.createElement('a');
+                    catLinkA.href = `#category-${sound.category.toLowerCase().replace(/\s+/g, '-')}`;
+                    catLinkA.textContent = sound.category;
+                    catLinkItem.appendChild(catLinkA);
+                    ol.appendChild(catLinkItem);
+
+                    const soundItem = document.createElement('li');
+                    soundItem.className = 'breadcrumb-item active';
+                    soundItem.textContent = sound.name;
+                    ol.appendChild(soundItem);
+                }
+            } else if (['contact', 'privacy', 'terms'].includes(currentFilter.viewMode)) {
+                 const pageItem = document.createElement('li');
+                pageItem.className = 'breadcrumb-item active';
+                if(currentFilter.viewMode === 'contact') pageItem.textContent = 'Contact';
+                if(currentFilter.viewMode === 'privacy') pageItem.textContent = 'Privacy Policy';
+                if(currentFilter.viewMode === 'terms') pageItem.textContent = 'Terms of Use';
+                ol.appendChild(pageItem);
+            }
+            breadcrumbsContainer.appendChild(ol);
+        }
+
+
+        function populateCategories(){const a=["all",...new Set(soundButtonsData.map(s=>s.category))];categorySelectMobile.innerHTML='<option value="all">All Categories</option>';a.forEach(b=>{const c=b==="all"?"All":b;if(b!=="all"){const f=document.createElement("option");f.value=b;f.textContent=c;categorySelectMobile.appendChild(f)}});categorySelectMobile.value=currentFilter.category}
+        
+        // --- EVENT LISTENERS & INITIALIZATION ---
+        searchInput.addEventListener("input",a=>{currentFilter.searchTerm=a.target.value;currentFilter.searchTerm||currentFilter.category!=="all"?showFilteredResultsView():currentFilter.category==="all"?showHomePageSections():showFilteredResultsView()});
+        categorySelectMobile.addEventListener("change",a=>{currentFilter.category=a.target.value; window.location.hash=`category-${a.target.value.toLowerCase().replace(/\s+/g,"-")}`;showFilteredResultsView()});
+        document.querySelectorAll(".view-more-link").forEach(a=>{a.addEventListener("click",b=>{ const c=b.target.closest('a').hash; currentFilter.searchTerm="";searchInput.value="";window.location.hash=c;})});
+        
+        backToGridButton.addEventListener("click",()=>{
+            const prevHash = currentFilter.previousHash || '#';
+            if (currentlyPlaying.soundId === currentFilter.currentSoundId && currentlyPlaying.isPostButton) {
+                 if (synths[currentlyPlaying.soundId] instanceof Tone.Part) { Tone.Transport.stop(); if(synths[currentlyPlaying.soundId] && !synths[currentlyPlaying.soundId].disposed) synths[currentlyPlaying.soundId].dispose(); }
+                 else if (synths[currentlyPlaying.soundId] && typeof synths[currentlyPlaying.soundId].dispose === 'function') { synths[currentlyPlaying.soundId].dispose(); }
+                 delete synths[currentlyPlaying.soundId]; resetCurrentlyPlayingButton(true);
+            }
+            currentFilter.previousHash = null; 
+            window.location.hash = prevHash; 
+        });
+
+        function handleHashChange(){
+            const cameFromPost = currentFilter.viewMode === 'post';
+            if (!cameFromPost) { 
+                 currentFilter.previousHash = currentFilter.currentRawHash || '#';
+            }
+            currentFilter.currentRawHash = window.location.hash;
+
+            const hash = window.location.hash;
+            let categoryFromHash = 'all'; let soundIdFromHash = null; let sortByFromHash = null;
+            let newViewMode = 'home'; 
+
+            if (hash.startsWith('#post-')) { soundIdFromHash = hash.substring('#post-'.length); newViewMode = 'post'; } 
+            else if (hash.startsWith('#category-')) { const catName = hash.substring('#category-'.length).replace(/-/g, ' '); const categories = ['all', ...new Set(soundButtonsData.map(s => s.category.toLowerCase().replace(/\s+/g, '-')))]; const foundCategory = categories.find(c => c === catName.toLowerCase().replace(/\s+/g, '-')); if (foundCategory) categoryFromHash = soundButtonsData.find(s => s.category.toLowerCase().replace(/\s+/g, '-') === foundCategory)?.category || 'all'; newViewMode = 'grid'; } 
+            else if (hash.startsWith('#sort-')) { sortByFromHash = hash.substring('#sort-'.length); categoryFromHash = 'all'; newViewMode = 'grid'; }
+            else if (hash === '#categories') { newViewMode = 'allCategories'; }
+            else if (hash === '#contact') { newViewMode = 'contact'; }
+            else if (hash === '#privacy') { newViewMode = 'privacy'; }
+            else if (hash === '#terms') { newViewMode = 'terms'; }
+            else if (hash === '#faq') {
+                showHomePageSections();
+                const faqSection = document.getElementById('homeIntroFaqSection');
+                if (faqSection) faqSection.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+            
+            currentFilter.category = categoryFromHash; currentFilter.sortBy = sortByFromHash; 
+            currentFilter.currentSoundId = soundIdFromHash; 
+
+            if (currentlyPlaying.soundId && ((currentFilter.viewMode === 'post' && currentlyPlaying.soundId !== soundIdFromHash) || (newViewMode !== 'post' && currentlyPlaying.isPostButton))) {
+                if (synths[currentlyPlaying.soundId] instanceof Tone.Part) { Tone.Transport.stop(); if(synths[currentlyPlaying.soundId] && !synths[currentlyPlaying.soundId].disposed) synths[currentlyPlaying.soundId].dispose(); }
+                else if (synths[currentlyPlaying.soundId] && typeof synths[currentlyPlaying.soundId].dispose === 'function') { synths[currentlyPlaying.soundId].dispose(); }
+                delete synths[currentlyPlaying.soundId]; resetCurrentlyPlayingButton(true);
+            }
+            currentFilter.viewMode = newViewMode; 
+            categorySelectMobile.value = categoryFromHash;
+
+            if (currentFilter.viewMode === 'post' && soundIdFromHash) { showSoundPostPage(soundIdFromHash); } 
+            else if (currentFilter.viewMode === 'allCategories') { displayAllCategoriesPage(); }
+            else if (currentFilter.viewMode === 'contact') { showStaticPage('contact', 'Contact'); }
+            else if (currentFilter.viewMode === 'privacy') { showStaticPage('privacy', 'Privacy Policy'); }
+            else if (currentFilter.viewMode === 'terms') { showStaticPage('terms', 'Terms of Use'); }
+            else if (currentFilter.viewMode === 'grid' || currentFilter.category !== 'all' || currentFilter.searchTerm || currentFilter.sortBy) { showFilteredResultsView(!!currentFilter.sortBy); } 
+            else { showHomePageSections(); }
+        }
+        document.getElementById("navHome").addEventListener("click",a=>{a.preventDefault();window.location.hash="";currentFilter.category="all";currentFilter.searchTerm="";currentFilter.sortBy=null;currentFilter.currentSoundId=null;searchInput.value="";categorySelectMobile.value="all";showHomePageSections();window.scrollTo({top:0,behavior:"smooth"})});
+        ['navLatest', 'navPopular', 'navTrending', 'navCategories'].forEach(navId => {
+            const navLink = document.getElementById(navId);
+            if (navLink) {
+                navLink.addEventListener('click', (e) => {
+                    currentFilter.searchTerm = ""; 
+                    searchInput.value = "";
+                });
+            }
+        });
+
+        // Theme Toggle
+        const storedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-bs-theme', storedTheme);
+        themeToggleBtn.innerHTML = storedTheme === 'dark' ? '<i class="bi bi-sun-fill"></i>' : '<i class="bi bi-moon-stars-fill"></i>';
+
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeToggleBtn.innerHTML = newTheme === 'dark' ? '<i class="bi bi-sun-fill"></i>' : '<i class="bi bi-moon-stars-fill"></i>';
+        });
+
+        // Back to Top Button
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.style.display = 'block';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        });
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+
+        function getTextColorForBg(a){if(!a)return"#FFFFFF";try{let b,c,d;if(a.startsWith("hsl")){const e=a.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);if(!e)return"#FFFFFF";let f=parseInt(e[1]),g=parseInt(e[2])/100,h=parseInt(e[3])/100;if(g===0)b=c=d=Math.round(h*255);else{const k=(l,m,n)=>{n<0&&(n+=1);n>1&&(n-=1);if(n<1/6)return l+(m-l)*6*n;if(n<1/2)return m;if(n<2/3)return l+(m-l)*(2/3-n)*6;return l};const i=h<0.5?h*(1+g):h+g-h*g,j=2*h-i;f/=360;b=Math.round(k(j,i,f+1/3)*255);c=Math.round(k(j,i,f)*255);d=Math.round(k(j,i,f-1/3)*255)}}else return"#FFFFFF";const l=Math.sqrt(.299*b*b+.587*c*c+.114*d*d);return l>135?"#212529":"#FFFFFF"}catch(a){return"#FFFFFF"}}
+        function getRandomColor(){const a=Math.floor(Math.random()*360),b=Math.floor(Math.random()*25)+70,c=Math.floor(Math.random()*20)+65;return`hsl(${a}, ${b}%, ${c}%)`} 
+        function adjustHslLightness(hslColor, amount) { const match = hslColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/); if (!match) return hslColor; let h = parseInt(match[1]), s = parseInt(match[2]), l = parseInt(match[3]); l = Math.max(0, Math.min(100, l + amount)); return `hsl(${h}, ${s}%, ${l}%)`; }
+        
+        window.addEventListener("DOMContentLoaded",()=>{populateCategories();handleHashChange();document.body.addEventListener("click",async()=>{Tone.context.state!=="running"&&await Tone.start().catch(a=>console.error("Error starting AudioContext:",a))},{once:!0}); displaySidebarContent(); }); 
+        window.addEventListener("hashchange",handleHashChange);
+
+    </script>
